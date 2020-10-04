@@ -5,8 +5,7 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
-
-
+## Graph 1
 # Fetch Dataset into DataFrame
 df = pd.read_csv('shutdown-data.csv')
 
@@ -26,19 +25,23 @@ annual_shutdowns = px.bar(
     hover_name="country ", hover_data=["duration"] 
 )
 
+# format x-axis labels
 annual_shutdowns.update_xaxes(
     rangeslider_visible = True,
     ticktext=["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     tickvals=["2019-01-01","2019-02-01","2019-03-01","2019-04-01","2019-05-01","2019-06-01","2019-07-01","2019-08-01","2019-09-01","2019-10-01","2019-11-01","2019-12-01", ]
 )
+# show range selector
 annual_shutdowns.update_yaxes(fixedrange = False)
 
+
+## Graph 2
 # define second plot and aesthetics
 downtime_country = px.pie(
     df,
     values="duration",
     names="country ",
-    title="Shutdown Duration (of Total Global Downtime) by Country",    
+    title="Proportional Duration (of Total Global Downtime) by Country",    
 )
 downtime_country.update_traces(
     textposition='inside',
@@ -46,6 +49,8 @@ downtime_country.update_traces(
     textinfo="label+percent"
 )
 
+
+## Graph 3
 # sum instances of social media outtages
 FB_count = df['Facebook_affected'].sum()
 TW_count = df['Twitter_affected'].sum()
@@ -61,8 +66,9 @@ soc_shutdown = px.bar(
     new_df,
     x='service',
     y='outages',
-    title="Social Media Shutdown by Platform",
-    color="service"    
+    title="Social Media Shutdowns by Platform",
+    color="service",
+    labels={'service': 'Platform', 'outages': 'Number of Outages'}
 )
 
 app = dash.Dash(__name__)
@@ -97,7 +103,7 @@ app.layout = html.Div([
             id="pie",
             figure=downtime_country
         )
-    ], className = "five columns"),
+    ], className="five columns"),
     
     html.Div([
         dcc.Graph(
